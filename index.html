@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AES-256-GCM Encryptor</title>
+  <meta name="description" content="Encrypt and decrypt text with AES-256-GCM directly in your browser" />
+  <meta property="og:title"       content="AES-256-GCM Encryptor" />
+  <meta property="og:description" content="Encrypt and decrypt text with AES-256-GCM directly in your browser" />
+  <meta property="og:type"        content="website" />
+  <link rel="stylesheet" type="text/css" href="assets/css/tailwind.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script defer src="assets/js/alpine.min.js"></script>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0f0f0f" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png" />
+</head>
+<body
+  class="font-mono text-[13px] min-h-screen"
+  x-data="cryptoApp()"
+  x-cloak
+>
+  <div class="max-w-lg mx-auto px-4 py-12">
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-lg font-medium tracking-tight" x-text="t.title"></span>
+        <button
+          @click="toggleLang()"
+          class="btn-secondary text-[11px] px-2.5 py-1 rounded-md"
+          x-text="lang === 'it' ? 'EN' : 'IT'"
+          title="Switch language"
+        ></button>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <label class="label mb-2" x-text="t.labelText"></label>
+      <textarea
+        x-model="input"
+        :placeholder="t.placeholder"
+        class="field w-full resize-y rounded-lg px-3 py-2.5 text-[12px] leading-relaxed select-text"
+      ></textarea>
+      <div class="flex gap-2 mt-3">
+        <input
+          :type="showPwd ? 'text' : 'password'"
+          x-model="password"
+          :placeholder="t.placeholderPwd"
+          class="field flex-1 h-10 rounded-lg px-3 select-text"
+        />
+        <button
+          @click="showPwd = !showPwd"
+          class="btn-secondary h-10 px-3.5 rounded-lg text-[11px] whitespace-nowrap"
+          x-text="showPwd ? t.btnHide : t.btnShow"
+        ></button>
+      </div>
+      <div class="flex gap-2 mt-3 flex-wrap">
+        <button
+          @click="encrypt()"
+          :disabled="loading"
+          class="btn-primary h-10 px-5 rounded-lg font-medium"
+        >
+          <span x-show="!loading" x-text="t.btnEncrypt"></span>
+        </button>
+        <button
+          @click="decrypt()"
+          :disabled="loading"
+          class="btn-secondary h-10 px-5 rounded-lg"
+          x-text="t.btnDecrypt"
+        ></button>
+        <button
+          @click="clear()"
+          class="btn-secondary h-10 px-5 rounded-lg ml-auto"
+          x-text="t.btnClear"
+        ></button>
+      </div>
+    </div>
+    <div
+      x-show="output !== null"
+      x-transition:enter="transition ease-out duration-150"
+      x-transition:enter-start="opacity-0 -translate-y-1"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      class="rounded-xl border p-4 mb-6"
+      :class="isError ? 'output-error' : 'output-success'"
+    >
+      <div class="flex items-center justify-between mb-2">
+        <span
+          class="text-[10px] uppercase tracking-widest font-medium"
+          :class="isError ? 'output-error-label' : 'output-success-label'"
+          x-text="outputLabel"
+        ></span>
+        <button
+          x-show="!isError"
+          @click="copyOutput()"
+          class="btn-secondary text-[11px] px-2.5 py-1 rounded-md"
+          x-text="copied ? t.btnCopied : t.btnCopy"
+        ></button>
+      </div>
+      <textarea
+        x-model="output"
+        readonly
+        class="output-area w-full px-0 py-1 text-[12px] leading-relaxed select-text"
+        :class="isError ? 'output-error-text' : ''"
+      ></textarea>
+    </div>
+    <div class="divider pt-5 flex items-center justify-center text-[11px]">
+      <span class="text-muted" style="opacity:0.7">
+        <span x-text="t.madeWith"></span>
+        <a href="https://claude.ai" target="_blank" rel="noopener" class="footer-link">Claude</a>
+        (Anthropic)
+      </span>
+    </div>
+  </div>
+  <script src="assets/js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/aes256-encryptor/sw.js');
+    }
+  </script>
+</body>
+</html>

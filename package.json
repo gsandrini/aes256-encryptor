@@ -1,0 +1,12 @@
+{
+  "name": "aes256-encryptor",
+  "version": "2.0.0",
+  "description": "AES-256-GCM text encryptor - static web app",
+  "scripts": {
+    "build": "tailwindcss -i ./assets/css/tailwind.src.css -o ./assets/css/tailwind.min.css --minify",
+    "watch": "tailwindcss -i ./assets/css/tailwind.src.css -o ./assets/css/tailwind.min.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}
